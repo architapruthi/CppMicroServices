@@ -21,7 +21,8 @@
   =============================================================================*/
 #ifndef CPPMICROSERVICES_LOGGER_FACTORY_H__
 #define CPPMICROSERVICES_LOGGER_FACTORY_H__
-#include "cppmicroservices/logger/Logger.hpp"
+#include "cppmicroservices/logservice/Logger.hpp"
+#include "cppmicroservices/Bundle.h"
 
 #include <cstdint>
 #include <exception>
@@ -32,12 +33,6 @@ namespace cppmicroservices
 {
     namespace logservice
     {
-	enum class LoggerType
-	{
-	    Logger,
-	    FormatterLogger
-	};
-
 	class LoggerFactory
 	{
 	    public:
@@ -48,7 +43,7 @@ namespace cppmicroservices
 
                 virtual std::shared_ptr<Logger> getLogger(std::string const& name = ROOT_LOGGER_NAME) const = 0;
 
-                virtual std::shared_ptr<Logger> getLogger(std::string const& name, LoggerType type) const = 0; 
+                virtual std::shared_ptr<Logger> getLogger(cppmicroservices::Bundle bundle, std::string const& name) const = 0; 
         };
     }
 }

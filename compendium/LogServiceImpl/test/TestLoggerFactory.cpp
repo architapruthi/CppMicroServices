@@ -23,11 +23,9 @@
 
 #include "LoggerFactoryImpl.hpp"
 #include "LoggerImpl.hpp"
-#include "FormatterLoggerImpl.hpp"
 
-#include "cppmicroservices/logger/LoggerFactory.hpp"
-#include "cppmicroservices/logger/Logger.hpp"
-#include "cppmicroservices/logger/FormatterLogger.hpp"
+#include "cppmicroservices/logservice/LoggerFactory.hpp"
+#include "cppmicroservices/logservice/Logger.hpp"
 
 namespace ls = cppmicroservices::logservice;
 
@@ -38,64 +36,13 @@ static const std::string log_preamble("\\[([0-9]{1,2}):([0-9]{1,2}):([0-9]{1,2})
 static const std::string svcRef_preamble("ServiceReference: ");
 static const std::string exception_preamble("Exception logged: ");
 
-class FormatterLoggerImplTests : public ::testing::Test
-{
-  public:
-    FormatterLoggerImplTests()
-    {
-	 std::shared_ptr<ls::LoggerFactory> lf = std::make_shared<ls::LoggerFactoryImpl>();  
-	 _impl = lf->getLogger("cppmicroservices::testing::logger", ls::LoggerType::FormatterLogger);
-    }
-
-    void
-    SetUp() override
-    {
-        _sink = std::make_shared<spdlog::sinks::ostream_sink_mt>(oss);
-        _sink->set_pattern(sinkFormat);
-        _impl->AddSink(_sink);
-    }
-
-    void
-    TearDown() override
-    {
-        _sink.reset();
-        _impl.reset();
-    }
-
-    bool
-    ContainsRegex(std::string const& regex)
-    {
-        std::string text = oss.str();
-        std::smatch m;
-        bool found = std::regex_search(text, m, std::regex(regex));
-        oss.str("");
-        return found;
-    }
-
-    std::shared_ptr<ls::Logger>
-    GetLogger()
-    {
-        return _impl;
-    }
-    std::ostringstream&
-    GetStream()
-    {
-        return oss;
-    }
-
-  private:
-    std::ostringstream oss;
-    spdlog::sink_ptr _sink;
-    std::shared_ptr<ls::Logger> _impl;
-};
-
 class LoggerImplTests : public ::testing::Test
 {
   public:
     LoggerImplTests()
     {
         std::shared_ptr<ls::LoggerFactory> lf = std::make_shared<ls::LoggerFactoryImpl>();
-        _impl = lf->getLogger("cppmicroservices::testing::logger", ls::LoggerType::Logger);
+        _impl = lf->getLogger("cppmicroservices::testing::logger");
     }
 
     void
@@ -210,65 +157,6 @@ TEST_F(LoggerImplTests, ProperLoggerUsage)
     EXPECT_TRUE(ContainsRegex(log_preamble + "Hola World!"));
 }
 
-TEST_F(FormatterLoggerImplTests, ProperLoggerUsage)
-{
-    auto logger = GetLogger();
-
-    logger->audit("Hello!");
-    EXPECT_TRUE(ContainsRegex(log_preamble + "Hello!"));
-
-    logger->audit("Hello %s", "World!");
-    EXPECT_TRUE(ContainsRegex(log_preamble + "Hello World!"));
-
-    logger->audit("Hello %s%s", "World", "!");
-    EXPECT_TRUE(ContainsRegex(log_preamble + "Hello World!"));
-
-     logger->debug("Hola!");
-    EXPECT_TRUE(ContainsRegex(log_preamble + "Hola!"));
-
-    logger->debug("Hola %s", "World!");
-    EXPECT_TRUE(ContainsRegex(log_preamble + "Hola World!"));
-
-    logger->debug("Hola %s%s", "World", "!");
-    EXPECT_TRUE(ContainsRegex(log_preamble + "Hola World!"));
-
-    logger->info("Hola!");
-    EXPECT_TRUE(ContainsRegex(log_preamble + "Hola!"));
-
-    logger->info("Hola %s", "World!");
-    EXPECT_TRUE(ContainsRegex(log_preamble + "Hola World!"));
-
-    logger->info("Hola %s%s", "World", "!");
-    EXPECT_TRUE(ContainsRegex(log_preamble + "Hola World!"));
-
-    logger->error("Hola!");
-    EXPECT_TRUE(ContainsRegex(log_preamble + "Hola!"));
-
-    logger->error("Hola %s", "World!");
-    EXPECT_TRUE(ContainsRegex(log_preamble + "Hola World!"));
-
-    logger->error("Hola %s%s", "World", "!");
-    EXPECT_TRUE(ContainsRegex(log_preamble + "Hola World!"));
-
-    logger->warn("Hola!");
-    EXPECT_TRUE(ContainsRegex(log_preamble + "Hola!"));
-
-    logger->warn("Hola %s", "World!");
-    EXPECT_TRUE(ContainsRegex(log_preamble + "Hola World!"));
-
-    logger->warn("Hola %s%s", "World", "!");
-    EXPECT_TRUE(ContainsRegex(log_preamble + "Hola World!"));
-
-    logger->trace("Hola!");
-    EXPECT_TRUE(ContainsRegex(log_preamble + "Hola!"));
-
-    logger->trace("Hola %s", "World!");
-    EXPECT_TRUE(ContainsRegex(log_preamble + "Hola World!"));
-
-    logger->trace("Hola %s%s", "World", "!");
-    EXPECT_TRUE(ContainsRegex(log_preamble + "Hola World!"));
-}
-
 TEST_F(LoggerImplTests, InvalidLoggerUsage)
 {
     auto logger = GetLogger();
@@ -296,32 +184,6 @@ TEST_F(LoggerImplTests, ThreadSafety)
             [&logger]()
             { logger->info("Test concurrent log calls");
             }));
-    }
-
-    for (auto& thread : threads)
-    {
-        thread.join();
-    }
-
-    std::regex regexp(log_preamble + "Test concurrent log calls");
-    std::string stream(oss.str());
-    auto regex_iter_end = std::sregex_iterator();
-
-    auto regex_iter_begin = std::sregex_iterator(stream.begin(), stream.end(), regexp);
-    std::ptrdiff_t num_found = std::distance(regex_iter_begin, regex_iter_end);
-    ASSERT_TRUE(num_found == iterations);
-}
-
-TEST_F(FormatterLoggerImplTests, ThreadSafety)
-{
-    auto logger = GetLogger();
-    auto& oss = GetStream();
-
-    int const iterations = 100;
-    std::vector<std::thread> threads;
-    for (int i = 0; i < iterations; i++)
-    {
-        threads.push_back(std::thread([&logger]() { logger->info("Test concurrent log calls"); }));
     }
 
     for (auto& thread : threads)

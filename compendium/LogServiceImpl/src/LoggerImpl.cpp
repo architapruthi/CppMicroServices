@@ -51,6 +51,15 @@ namespace cppmicroservices
             m_Logger->set_level(spdlog::level::trace);
         }
 
+	LoggerImpl::LoggerImpl(cppmicroservices::Bundle bundle, std::string const& loggerName)
+        {
+            auto sink = std::make_shared<spdlog::sinks::stdout_color_sink_mt>();
+	    const std::string logger_name = bundle.GetSymbolicName() + "." + loggerName;
+            m_Logger = std::make_shared<spdlog::logger>(logger_name, std::move(sink));
+            m_Logger->set_pattern("[%T] [%P:%t] %n (%^%l%$): %v");
+            m_Logger->set_level(spdlog::level::trace);
+        }
+
         void
         LoggerImpl::audit(std::string const& message)
         {

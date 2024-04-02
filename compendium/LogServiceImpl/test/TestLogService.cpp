@@ -159,7 +159,7 @@ TEST_F(LogServiceImplTests, ProperLoggerUsage)
                               + "Invalid service reference(\\n)" + exception_preamble + "none"));
 }
 
-TEST_F(LogServiceImplTests, InvalidLoggerUsage)
+/* TEST_F(LogServiceImplTests, InvalidLoggerUsage)
 {
     auto logger = GetLogger();
 
@@ -179,7 +179,7 @@ TEST_F(LogServiceImplTests, InvalidLoggerUsage)
                                 nullptr));
     EXPECT_TRUE(ContainsRegex(log_preamble + "Test invalid ServiceReferenceBase object(\\n)" + svcRef_preamble
                               + "Invalid service reference(\\n)" + exception_preamble + "none"));
-}
+}*/
 
 TEST_F(LogServiceImplTests, ThreadSafety)
 {

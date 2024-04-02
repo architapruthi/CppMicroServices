@@ -7,7 +7,17 @@
 #include <exception>
 #include <string>
 #include <functional>
-#include "spdlog/spdlog.h"
+
+namespace sinks
+{
+    class sink;
+}
+
+namespace spdlog
+{
+    class logger;
+    using sink_ptr = std::shared_ptr<sinks::sink>;
+} // namespace spdlog
 
 namespace cppmicroservices
 {

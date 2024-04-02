@@ -1,15 +1,5 @@
-#include "cppmicroservices/logger/Logger.hpp"
-
-namespace sinks
-{
-    class sink;
-}
-
-namespace spdlog
-{
-    class logger;
-    using sink_ptr = std::shared_ptr<sinks::sink>;
-} // namespace spdlog
+#include "cppmicroservices/logservice/Logger.hpp"
+#include "cppmicroservices/Bundle.h"
 
 namespace cppmicroservices
 {
@@ -19,6 +9,7 @@ namespace cppmicroservices
         {
 	    public:
                 LoggerImpl(std::string const& loggerName);
+		LoggerImpl(cppmicroservices::Bundle bundle, std::string const& loggerName);
                 ~LoggerImpl() = default;
 
 	         void audit(const std::string& message) override;

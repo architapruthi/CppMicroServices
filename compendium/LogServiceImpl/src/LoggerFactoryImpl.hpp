@@ -1,4 +1,4 @@
-#include "cppmicroservices/logger/LoggerFactory.hpp"
+#include "cppmicroservices/logservice/LoggerFactory.hpp"
 
 namespace cppmicroservices
 {
@@ -11,7 +11,7 @@ namespace cppmicroservices
               ~LoggerFactoryImpl() = default;
 
               std::shared_ptr<Logger> getLogger(std::string const& name) const override;
-              std::shared_ptr<Logger> getLogger(std::string const& name, LoggerType type) const override;              
+              std::shared_ptr<Logger> getLogger(cppmicroservices::Bundle bundle, std::string const& name) const override;              
         };
     } // namespace logservice
 } // namespace cppmicroservices

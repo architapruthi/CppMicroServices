@@ -6,50 +6,16 @@
 #include "cppmicroservices/ServiceReference.h"
 
 #include "LogServiceImpl.hpp"
+#include "LoggerFactoryImpl.hpp"
 
 namespace cppmicroservices
 {
     namespace logservice
-    {
-        std::string
-        GetExceptionMessage(std::exception_ptr const& ex)
-        {
-            std::string message = "\nException logged: ";
-            if (ex)
-            {
-                std::ostringstream stream;
-                try
-                {
-                    std::rethrow_exception(ex);
-                }
-                catch (std::exception const& e)
-                {
-                    message += std::string(typeid(e).name()) + " : " + e.what();
-                }
-            }
-            else
-            {
-                message += "none";
-            }
-
-            return message;
-        }
-
-        std::string
-        GetServiceReferenceInfo(ServiceReferenceBase const& sr)
-        {
-            std::ostringstream stream;
-            stream << "\nServiceReference: " << sr;
-            return stream.str();
-        }
-
+    {       
         LogServiceImpl::LogServiceImpl(std::string const& loggerName)
         {
-            auto sink = std::make_shared<spdlog::sinks::stdout_color_sink_mt>();
-            m_Logger = std::make_shared<spdlog::logger>(loggerName, std::move(sink));
-            m_Logger->set_pattern("[%T] [%P:%t] %n (%^%l%$): %v");
-            m_Logger->set_level(spdlog::level::trace);
-        }
+            logger = getLogger(loggerName);    
+	}
 
         void
         LogServiceImpl::Log(SeverityLevel level, std::string const& message)
@@ -58,41 +24,96 @@ namespace cppmicroservices
             {
                 case SeverityLevel::LOG_DEBUG:
                 {
-                    m_Logger->debug(message);
+                    logger->debug(message);
                     break;
                 }
-                case SeverityLevel::LOG_INFO:
+                 case SeverityLevel::LOG_INFO:
                 {
-                    m_Logger->info(message);
+                    logger->info(message);
                     break;
                 }
                 case SeverityLevel::LOG_WARNING:
                 {
-                    m_Logger->warn(message);
+                    logger->warn(message);
                     break;
                 }
                 case SeverityLevel::LOG_ERROR:
                 {
-                    m_Logger->error(message);
+                    logger->error(message);
                     break;
                 }
+		default:
+		{
+		    logger->trace(message);
+		    break;
+		}
             }
         }
 
         void
         LogServiceImpl::Log(SeverityLevel level, std::string const& message, const std::exception_ptr ex)
         {
-            std::string full_message = message;
-            full_message = message + GetExceptionMessage(ex);
-            LogServiceImpl::Log(level, full_message);
+            switch (level)
+            {
+                case SeverityLevel::LOG_DEBUG:
+                {
+                    logger->debug(message, ex);
+                    break;
+                }
+                case SeverityLevel::LOG_INFO:
+                {
+                    logger->info(message, ex);
+                    break;
+                }
+                case SeverityLevel::LOG_WARNING:
+                {
+                    logger->warn(message, ex);
+                    break;
+                }
+                case SeverityLevel::LOG_ERROR:
+                {
+                    logger->error(message, ex);
+                    break;
+                }
+		default:
+                {
+                    logger->trace(message, ex);
+                    break;
+                }
+            }
         }
 
         void
         LogServiceImpl::Log(ServiceReferenceBase const& sr, SeverityLevel level, std::string const& message)
         {
-            std::string full_message = message;
-            full_message = message + GetServiceReferenceInfo(sr);
-            LogServiceImpl::Log(level, full_message);
+            switch (level)
+            {
+                case SeverityLevel::LOG_DEBUG:
+                {
+                    logger->debug(message, sr);
+                    break;
+                }
+                case SeverityLevel::LOG_INFO:
+                {
+                    logger->info(message, sr);
+                    break;
+                }
+                case SeverityLevel::LOG_WARNING:
+                {
+                    logger->warn(message, sr);
+                    break;
+                }
+                case SeverityLevel::LOG_ERROR:
+                {
+                    logger->error(message, sr);
+                    break;
+                }
+		default:
+                {
+                    logger->trace(message, sr);
+                    break;
+                }
+            }
         }
 
         void
@@ -101,15 +122,54 @@ namespace cppmicroservices
                             std::string const& message,
                             const std::exception_ptr ex)
         {
-            std::string full_message = message;
-            full_message = message + GetServiceReferenceInfo(sr) + GetExceptionMessage(ex);
-            LogServiceImpl::Log(level, full_message);
+            switch (level)
+            {
+                case SeverityLevel::LOG_DEBUG:
+                {
+                    logger->debug(message, sr, ex);
+                    break;
+                }
+                case SeverityLevel::LOG_INFO:
+                {
+                    logger->info(message, sr, ex);
+                    break;
+                }
+                case SeverityLevel::LOG_WARNING:
+                {
+                    logger->warn(message, sr, ex);
+                    break;
+                }
+                case SeverityLevel::LOG_ERROR:
+                {
+                    logger->error(message, sr, ex);
+                    break;
+                }
+		default:
+                {
+                    logger->trace(message, sr, ex);
+                    break;
+                }
+            }
+        }
+
+        std::shared_ptr<Logger> 
+            LogServiceImpl::getLogger(std::string const& name) const
+        {
+            std::shared_ptr<LoggerFactory> lf = std::make_shared<LoggerFactoryImpl>();
+            return lf->getLogger(name);
+        }
+
+	std::shared_ptr<Logger>
+            LogServiceImpl::getLogger(cppmicroservices::Bundle bundle, std::string const& name) const
+        {
+            std::shared_ptr<LoggerFactory> lf = std::make_shared<LoggerFactoryImpl>();
+            return lf->getLogger(bundle, name);
         }
 
         void
         LogServiceImpl::AddSink(spdlog::sink_ptr& sink)
         {
-            m_Logger->sinks().push_back(sink);
+            logger->AddSink(sink);
         }
     } // namespace logservice
 } // namespace cppmicroservices

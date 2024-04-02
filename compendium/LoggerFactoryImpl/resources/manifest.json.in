@@ -1,6 +1,0 @@
-{
-    "bundle.symbolic_name": "logger_factory",
-    "bundle.name" : "LoggerFactory",
-    "bundle.version" : "@LoggerFactory_VERSION@",
-    "bundle.activator" : true
-}
