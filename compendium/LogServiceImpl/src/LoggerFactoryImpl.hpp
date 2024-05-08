@@ -1,4 +1,5 @@
 #include "cppmicroservices/logservice/LoggerFactory.hpp"
+#include <mutex>
 
 namespace cppmicroservices
 {
@@ -12,6 +13,9 @@ namespace cppmicroservices
 
               std::shared_ptr<Logger> getLogger(std::string const& name) const override;
               std::shared_ptr<Logger> getLogger(cppmicroservices::Bundle bundle, std::string const& name) const override;              
+
+	  private:
+	      mutable std::mutex mutex; // Mutex for synchronization
         };
     } // namespace logservice
 } // namespace cppmicroservices

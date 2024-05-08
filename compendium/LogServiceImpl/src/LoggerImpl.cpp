@@ -63,48 +63,48 @@ namespace cppmicroservices
         void
         LoggerImpl::audit(std::string const& message)
         {
-	    m_Logger->set_level(spdlog::level::critical);
-	    m_Logger->critical(message);
+	    m_Logger->set_level(spdlog::level::trace);
+	    m_Logger->trace(message);
         }
 
         void 
         LoggerImpl::audit(std::string const& format, std::string const& arg)
         {
-            m_Logger->set_level(spdlog::level::critical);
-            m_Logger->critical(format, arg);
+            m_Logger->set_level(spdlog::level::trace);
+            m_Logger->trace(format, arg);
         }
 
         void
         LoggerImpl::audit(std::string const& format, std::string const& arg1, std::string const& arg2)
         {
-            m_Logger->set_level(spdlog::level::critical);
-            m_Logger->critical(format, arg1, arg2);
+            m_Logger->set_level(spdlog::level::trace);
+            m_Logger->trace(format, arg1, arg2);
         }
 
         void
         LoggerImpl::audit(std::string const& message, const std::exception_ptr ex)
         {
-            m_Logger->set_level(spdlog::level::critical);
+            m_Logger->set_level(spdlog::level::trace);
             std::string full_message = message;
             full_message = message + GetExceptionMessage(ex);
-            m_Logger->critical(full_message);
+            m_Logger->trace(full_message);
         }
         void
         LoggerImpl::audit(std::string const& message, ServiceReferenceBase const& sr)
         {
-            m_Logger->set_level(spdlog::level::critical);
+            m_Logger->set_level(spdlog::level::trace);
             std::string full_message = message;
             full_message = message + GetServiceReferenceInfo(sr);
-            m_Logger->critical(full_message);
+            m_Logger->trace(full_message);
         }
 
         void
         LoggerImpl::audit(std::string const& message, ServiceReferenceBase const& sr, const std::exception_ptr ex)
         {
-            m_Logger->set_level(spdlog::level::critical);
+            m_Logger->set_level(spdlog::level::trace);
             std::string full_message = message;
             full_message = message + GetServiceReferenceInfo(sr) + GetExceptionMessage(ex);
-            m_Logger->critical(full_message);
+            m_Logger->trace(full_message);
         }
 
         void

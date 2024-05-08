@@ -159,16 +159,9 @@ TEST_F(LogServiceImplTests, ProperLoggerUsage)
                               + "Invalid service reference(\\n)" + exception_preamble + "none"));
 }
 
-/* TEST_F(LogServiceImplTests, InvalidLoggerUsage)
+TEST_F(LogServiceImplTests, InvalidLoggerUsage)
 {
     auto logger = GetLogger();
-
-    ASSERT_NO_THROW(logger->Log(static_cast<ls::SeverityLevel>(-1), "Test invalid negative severity level"));
-    EXPECT_FALSE(ContainsRegex(log_preamble + "Test invalid negative severity level"));
-
-    ASSERT_NO_THROW(logger->Log(static_cast<ls::SeverityLevel>(std::numeric_limits<unsigned int>::max()),
-                                "Test invalid maximum severity level"));
-    EXPECT_FALSE(ContainsRegex(log_preamble + "Test invalid maximum severity level"));
 
     ASSERT_NO_THROW(logger->Log(ls::SeverityLevel::LOG_INFO, "Test invalid exception_ptr", nullptr));
     EXPECT_TRUE(ContainsRegex(log_preamble + "Test invalid exception_ptr(\\n)" + exception_preamble + "none"));
@@ -179,7 +172,7 @@ TEST_F(LogServiceImplTests, ProperLoggerUsage)
                                 nullptr));
     EXPECT_TRUE(ContainsRegex(log_preamble + "Test invalid ServiceReferenceBase object(\\n)" + svcRef_preamble
                               + "Invalid service reference(\\n)" + exception_preamble + "none"));
-}*/
+}
 
 TEST_F(LogServiceImplTests, ThreadSafety)
 {

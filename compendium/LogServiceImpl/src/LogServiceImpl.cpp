@@ -24,27 +24,52 @@ namespace cppmicroservices
             {
                 case SeverityLevel::LOG_DEBUG:
                 {
-                    logger->debug(message);
+		    auto currLogger = std::atomic_load(&logger);
+
+		    if(currLogger)
+		    {
+                        currLogger->debug(message);
+		    }
                     break;
                 }
-                 case SeverityLevel::LOG_INFO:
+                case SeverityLevel::LOG_INFO:
                 {
-                    logger->info(message);
+                     auto currLogger = std::atomic_load(&logger);
+
+                    if(currLogger)
+		    {
+		        currLogger->info(message);
+		    }
                     break;
                 }
                 case SeverityLevel::LOG_WARNING:
                 {
-                    logger->warn(message);
+			 auto currLogger = std::atomic_load(&logger);
+
+                    if(currLogger)
+		    {
+                       currLogger->warn(message);
+		    }
                     break;
                 }
                 case SeverityLevel::LOG_ERROR:
                 {
-                    logger->error(message);
+			 auto currLogger = std::atomic_load(&logger);
+
+                    if(currLogger)
+		    {
+                       currLogger->error(message);
+		    }
                     break;
                 }
 		default:
 		{
-		    logger->trace(message);
+			auto currLogger = std::atomic_load(&logger);
+
+                    if(currLogger)
+		    {
+		      currLogger->trace(message);
+		    }
 		    break;
 		}
             }
@@ -57,27 +82,52 @@ namespace cppmicroservices
             {
                 case SeverityLevel::LOG_DEBUG:
                 {
-                    logger->debug(message, ex);
+			 auto currLogger = std::atomic_load(&logger);
+
+                    if(currLogger)
+		    {	
+                       currLogger->debug(message, ex);
+		    }
                     break;
                 }
                 case SeverityLevel::LOG_INFO:
                 {
-                    logger->info(message, ex);
+			 auto currLogger = std::atomic_load(&logger);
+
+                    if(currLogger)
+		    {
+                       currLogger->info(message, ex);
+		    }
                     break;
                 }
                 case SeverityLevel::LOG_WARNING:
                 {
-                    logger->warn(message, ex);
+			 auto currLogger = std::atomic_load(&logger);
+
+                    if(currLogger)
+		    {
+                        currLogger->warn(message, ex);
+		    }
                     break;
                 }
                 case SeverityLevel::LOG_ERROR:
                 {
-                    logger->error(message, ex);
+			 auto currLogger = std::atomic_load(&logger);
+
+                    if(currLogger)
+		    {
+                        currLogger->error(message, ex);
+		    }
                     break;
                 }
 		default:
                 {
-                    logger->trace(message, ex);
+			 auto currLogger = std::atomic_load(&logger);
+
+                    if(currLogger)
+		    {
+                        currLogger->trace(message, ex);
+		    }
                     break;
                 }
             }
@@ -90,27 +140,52 @@ namespace cppmicroservices
             {
                 case SeverityLevel::LOG_DEBUG:
                 {
-                    logger->debug(message, sr);
+			 auto currLogger = std::atomic_load(&logger);
+
+                    if(currLogger)
+		    {
+                       currLogger->debug(message, sr);
+		    }
                     break;
                 }
                 case SeverityLevel::LOG_INFO:
                 {
-                    logger->info(message, sr);
+			 auto currLogger = std::atomic_load(&logger);
+
+                    if(currLogger)
+		    {
+                        currLogger->info(message, sr);
+		    }
                     break;
                 }
                 case SeverityLevel::LOG_WARNING:
                 {
-                    logger->warn(message, sr);
+			 auto currLogger = std::atomic_load(&logger);
+
+                    if(currLogger)
+		    {
+                        currLogger->warn(message, sr);
+		    }
                     break;
                 }
                 case SeverityLevel::LOG_ERROR:
                 {
-                    logger->error(message, sr);
+			 auto currLogger = std::atomic_load(&logger);
+
+                    if(currLogger)
+		    {
+                       currLogger->error(message, sr);
+		    }
                     break;
                 }
 		default:
                 {
-                    logger->trace(message, sr);
+			 auto currLogger = std::atomic_load(&logger);
+
+                    if(currLogger)
+		    {
+                        currLogger->trace(message, sr);
+		    }
                     break;
                 }
             }
@@ -126,27 +201,52 @@ namespace cppmicroservices
             {
                 case SeverityLevel::LOG_DEBUG:
                 {
-                    logger->debug(message, sr, ex);
+			 auto currLogger = std::atomic_load(&logger);
+
+                    if(currLogger)
+		    {
+                        currLogger->debug(message, sr, ex);
+		    }
                     break;
                 }
                 case SeverityLevel::LOG_INFO:
                 {
-                    logger->info(message, sr, ex);
+			 auto currLogger = std::atomic_load(&logger);
+
+                    if(currLogger)
+		    {
+                        currLogger->info(message, sr, ex);
+		    }
                     break;
                 }
                 case SeverityLevel::LOG_WARNING:
                 {
-                    logger->warn(message, sr, ex);
+			 auto currLogger = std::atomic_load(&logger);
+
+                    if(currLogger)
+		    {
+                        currLogger->warn(message, sr, ex);
+		    }
                     break;
                 }
                 case SeverityLevel::LOG_ERROR:
                 {
-                    logger->error(message, sr, ex);
+			 auto currLogger = std::atomic_load(&logger);
+
+                    if(currLogger)
+		    {
+                       currLogger->error(message, sr, ex);
+		    }
                     break;
                 }
 		default:
                 {
-                    logger->trace(message, sr, ex);
+			 auto currLogger = std::atomic_load(&logger);
+
+                    if(currLogger)
+		    {
+                       currLogger->trace(message, sr, ex);
+		    }
                     break;
                 }
             }
